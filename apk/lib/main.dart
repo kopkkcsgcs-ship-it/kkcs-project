@@ -279,6 +279,7 @@ class AuthService {
   static const _tokenKey = 'kkcs_auth_token';
 
   static String get baseUrl {
+    if (kReleaseMode) return 'https://api.kopkkcs-gcs.tech';
     if (kIsWeb) return 'http://localhost:5168';
     if (defaultTargetPlatform == TargetPlatform.android) {
       return 'http://10.0.2.2:5168';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:apk/main.dart';
+import 'package:kkcs/main.dart';
 
 void main() {
   testWidgets('landing page menyediakan akses masuk dan daftar', (WidgetTester tester) async {
