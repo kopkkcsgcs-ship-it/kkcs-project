@@ -55,7 +55,7 @@ jobs:
 
       - name: Upload backend dan restart service
         run: |
-          rsync -az --omit-dir-times -e "ssh -i ~/.ssh/id_ed25519" "$RUNNER_TEMP/publish/" "$SSH_TARGET:/opt/kkcs-backend/"
+          rsync -az --no-perms --omit-dir-times -e "ssh -i ~/.ssh/id_ed25519" "$RUNNER_TEMP/publish/" "$SSH_TARGET:/opt/kkcs-backend/"
           ssh -i ~/.ssh/id_ed25519 "$SSH_TARGET" "sudo systemctl restart kkcs-backend && sleep 3 && systemctl is-active kkcs-backend"
 
       - name: Smoke test API
