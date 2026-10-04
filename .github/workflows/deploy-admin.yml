@@ -37,6 +37,9 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
 
+      - name: Tes koneksi SSH
+        run: ssh -i ~/.ssh/id_ed25519 "$SSH_TARGET" "echo koneksi-ok"
+
       - name: Upload ke server
         run: |
           rsync -az --delete -e "ssh -i ~/.ssh/id_ed25519" admin/dist/ "$SSH_TARGET:/var/www/kkcs-admin/"
