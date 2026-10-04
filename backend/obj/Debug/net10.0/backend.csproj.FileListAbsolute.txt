@@ -737,3 +737,11 @@ E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\runtimes\win-x64\native\QuestPdf
 E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\runtimes\win-x64\native\qpdf.dll
 E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\runtimes\win-x86\native\QuestPdfSkia.dll
 E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\runtimes\win-x86\native\qpdf.dll
+E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\publish-prod\web.config
+E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\appsettings.Production.json
+E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\publish-prod\appsettings.Development.json
+E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\publish-prod\appsettings.json
+E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\publish-prod\appsettings.Production.json
+E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\publish-prod\backend.deps.json
+E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\publish-prod\backend.runtimeconfig.json
+E:\Kerja\kkcs-project\backend\bin\Debug\net10.0\publish-prod\backend.staticwebassets.endpoints.json

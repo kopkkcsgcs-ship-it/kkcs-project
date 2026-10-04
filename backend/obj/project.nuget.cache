@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "4S84KEeduTk=",
+  "dgSpecHash": "s3LhD45Jo+s=",
   "success": true,
   "projectFilePath": "E:\\Kerja\\kkcs-project\\backend\\backend.csproj",
   "expectedPackageFiles": [
@@ -62,10 +62,7 @@
     "C:\\Users\\Arjuna\\.nuget\\packages\\system.io.packaging\\8.0.1\\system.io.packaging.8.0.1.nupkg.sha512",
     "C:\\Users\\Arjuna\\.nuget\\packages\\system.memory.data\\8.0.1\\system.memory.data.8.0.1.nupkg.sha512",
     "C:\\Users\\Arjuna\\.nuget\\packages\\system.security.cryptography.pkcs\\9.0.4\\system.security.cryptography.pkcs.9.0.4.nupkg.sha512",
-    "C:\\Users\\Arjuna\\.nuget\\packages\\system.security.cryptography.protecteddata\\9.0.4\\system.security.cryptography.protecteddata.9.0.4.nupkg.sha512",
-    "C:\\Users\\Arjuna\\.nuget\\packages\\microsoft.netcore.app.runtime.linux-x64\\10.0.8\\microsoft.netcore.app.runtime.linux-x64.10.0.8.nupkg.sha512",
-    "C:\\Users\\Arjuna\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.linux-x64\\10.0.8\\microsoft.aspnetcore.app.runtime.linux-x64.10.0.8.nupkg.sha512",
-    "C:\\Users\\Arjuna\\.nuget\\packages\\microsoft.netcore.app.host.linux-x64\\10.0.8\\microsoft.netcore.app.host.linux-x64.10.0.8.nupkg.sha512"
+    "C:\\Users\\Arjuna\\.nuget\\packages\\system.security.cryptography.protecteddata\\9.0.4\\system.security.cryptography.protecteddata.9.0.4.nupkg.sha512"
   ],
   "logs": [
     {
@@ -77,8 +74,7 @@
       "filePath": "E:\\Kerja\\kkcs-project\\backend\\backend.csproj",
       "libraryId": "Microsoft.OpenApi",
       "targetGraphs": [
-        "net10.0",
-        "net10.0/linux-x64"
+        "net10.0"
       ]
     }
   ]

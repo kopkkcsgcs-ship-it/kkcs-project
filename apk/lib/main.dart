@@ -746,9 +746,7 @@ class AuthService {
     try {
       return await request();
     } on http.ClientException {
-      throw const ApiException(
-        'Tidak dapat terhubung ke server. Jalankan backend di http://localhost:5168 terlebih dahulu.',
-      );
+      throw ApiException('Tidak dapat terhubung ke server ($baseUrl). Periksa koneksi internet Anda.');
     }
   }
 
