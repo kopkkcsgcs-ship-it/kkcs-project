@@ -315,14 +315,24 @@ app.MapGet("/api/admin/dashboard/ringkasan", async (KkcsDbContext db) =>
     var totalAnggotaAktif = await db.Pengguna.CountAsync(p => p.StatusKeanggotaan == "Aktif" && p.Aktif);
     var pendaftaranMenunggu = await db.Pengguna.CountAsync(p => p.StatusKeanggotaan == "MenungguPersetujuan");
 
+    // Akuntansi (dihitung langsung dari buku besar, selalu sinkron dengan jurnal)
+    var neraca = await AkuntansiReportService.HitungNeracaAsync(db, hariIni);
+    var labaRugiTahunIni = await AkuntansiReportService.HitungLabaRugiAsync(db, awalTahun, hariIni);
+    var labaRugiBulanIni = await AkuntansiReportService.HitungLabaRugiAsync(db, awalBulan, hariIni);
+
     // Simpanan
+    // Pokok & Wajib diambil dari buku besar agar sama dengan Neraca; tabel Simpanan per anggota tidak memuat
+    // saldo ex-anggota yang sudah keluar namun masih tercatat di neraca.
+    decimal SaldoBuku(string kode) => neraca.Ekuitas.FirstOrDefault(a => a.Kode == kode)?.Saldo ?? 0;
     var totalSimpananPerJenis = await db.Simpanan.Include(s => s.JenisSimpanan)
         .GroupBy(s => s.JenisSimpanan.Kode)
         .Select(g => new { Kode = g.Key, Total = g.Sum(s => s.Saldo) })
         .ToListAsync();
     decimal SaldoJenis(string kode) => totalSimpananPerJenis.FirstOrDefault(x => x.Kode == kode)?.Total ?? 0;
+    var saldoPokok = SaldoBuku(KodeAkun.SimpananPokok);
+    var saldoWajib = SaldoBuku(KodeAkun.SimpananWajib);
     var totalBerjangkaAktif = await db.SimpananBerjangka.Where(b => b.Status == "Aktif" || b.Status == "JatuhTempo").SumAsync(b => (decimal?)b.Nominal) ?? 0;
-    var totalSimpananSemua = SaldoJenis("POKOK") + SaldoJenis("WAJIB") + SaldoJenis("SUKARELA") + totalBerjangkaAktif;
+    var totalSimpananSemua = saldoPokok + saldoWajib + SaldoJenis("SUKARELA") + totalBerjangkaAktif;
     var wajibMenunggu = await db.TagihanWajib.CountAsync(t => t.Status == "Ditagih");
     var sukarelaMenunggu = await db.TransaksiSukarela.CountAsync(t => t.Status == "Diajukan");
     var berjangkaMenunggu = await db.SimpananBerjangka.CountAsync(b => b.Status == "Diajukan" || b.PencairanDiajukan);
@@ -337,11 +347,6 @@ app.MapGet("/api/admin/dashboard/ringkasan", async (KkcsDbContext db) =>
     var titipanMenunggu = await db.Produk.CountAsync(p => p.Status == "MenungguPersetujuan");
     var pembelianMenunggu = await db.PembelianProduk.CountAsync(p => p.Status == "Diajukan");
     var tagihanKreditBelumLunas = await db.TagihanKredit.Where(t => t.Status != "Lunas").SumAsync(t => (decimal?)t.Total) ?? 0;
-
-    // Akuntansi (dihitung langsung dari buku besar, selalu sinkron dengan jurnal)
-    var neraca = await AkuntansiReportService.HitungNeracaAsync(db, hariIni);
-    var labaRugiTahunIni = await AkuntansiReportService.HitungLabaRugiAsync(db, awalTahun, hariIni);
-    var labaRugiBulanIni = await AkuntansiReportService.HitungLabaRugiAsync(db, awalBulan, hariIni);
 
     // Tren 6 bulan terakhir (pendapatan vs beban) untuk grafik ringkas.
     var trenBulanan = new List<DashboardTrenBulanan>();
@@ -373,7 +378,7 @@ app.MapGet("/api/admin/dashboard/ringkasan", async (KkcsDbContext db) =>
 
     return Results.Ok(new DashboardRingkasanResponse(
         totalAnggotaAktif, pendaftaranMenunggu,
-        totalSimpananSemua, SaldoJenis("POKOK"), SaldoJenis("WAJIB"), SaldoJenis("SUKARELA"), totalBerjangkaAktif,
+        totalSimpananSemua, saldoPokok, saldoWajib, SaldoJenis("SUKARELA"), totalBerjangkaAktif,
         wajibMenunggu, sukarelaMenunggu, berjangkaMenunggu,
         pinjamanAktifCount, totalSisaPokok, pengajuanPinjamanMenunggu, pembayaranPinjamanMenunggu,
         titipanMenunggu, pembelianMenunggu, tagihanKreditBelumLunas,
@@ -1208,7 +1213,11 @@ app.MapGet("/api/admin/akuntansi/akun/{kode}/rincian", async (string kode, DateT
 }).RequireAuthorization("Pengurus");
 
 app.MapGet("/api/admin/akuntansi/neraca", async (DateTime? tanggal, KkcsDbContext db) =>
-    Results.Ok(await AkuntansiReportService.HitungNeracaAsync(db, tanggal ?? DateTime.UtcNow)))
+{
+    var neraca = await AkuntansiReportService.HitungNeracaAsync(db, tanggal ?? DateTime.UtcNow);
+    var catatan = await db.KonfigurasiKoperasi.AsNoTracking().Select(k => k.CatatanNeraca).FirstOrDefaultAsync();
+    return Results.Ok(neraca with { Catatan = catatan });
+})
     .RequireAuthorization("Pengurus");
 
 app.MapGet("/api/admin/akuntansi/laba-rugi", async (DateTime? dari, DateTime? sampai, KkcsDbContext db) =>

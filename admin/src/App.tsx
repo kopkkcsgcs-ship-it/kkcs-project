@@ -58,7 +58,7 @@ type JurnalBarisT = { akunId: number; kodeAkun: string; namaAkun: string; debit:
 type Jurnal = { id: number; nomorJurnal: string; tanggal: string; keterangan: string; sumber: string; referensiModul: string | null; referensiId: string | null; dicatatOleh: string | null; baris: JurnalBarisT[] }
 type SaldoAkunItem = { kode: string; nama: string; saldo: number }
 type LabaRugi = { dari: string; sampai: string; pendapatan: SaldoAkunItem[]; totalPendapatan: number; beban: SaldoAkunItem[]; totalBeban: number; labaBersih: number }
-type Neraca = { tanggal: string; aset: SaldoAkunItem[]; totalAset: number; liabilitas: SaldoAkunItem[]; totalLiabilitas: number; ekuitas: SaldoAkunItem[]; shuBerjalan: number; totalEkuitas: number; selisih: number }
+type Neraca = { tanggal: string; aset: SaldoAkunItem[]; totalAset: number; liabilitas: SaldoAkunItem[]; totalLiabilitas: number; ekuitas: SaldoAkunItem[]; shuBerjalan: number; totalEkuitas: number; selisih: number; catatan?: string | null }
 type ProfilKoperasi = { visi: string; misi: string; alamatKantor: string | null; tanggalDidirikan: string | null; nomorAktaPendirian: string | null; tanggalAkta: string | null }
 type RatKonten = {
   tahun: number; kegiatanBisnis: string | null; kegiatanSosial: string | null
@@ -6470,6 +6470,7 @@ function AkuntansiView({ token, onExpired, tab, setTab }: { token: string; onExp
           {Math.abs(neraca.selisih) < 1 ? <BadgeCheck size={17} /> : <X size={17} />}
           <strong>Selisih: {rupiah(neraca.selisih)}</strong> — {Math.abs(neraca.selisih) < 1 ? 'Neraca seimbang (balance)' : 'Tidak seimbang — periksa entri jurnal'}
         </div>
+        {neraca.catatan && <p style={{ fontSize: 12, color: 'var(--muted)', margin: 0 }}><strong>Catatan:</strong> {neraca.catatan}</p>}
       </div>
     </section>}
 

@@ -24,5 +24,8 @@ public class KonfigurasiKoperasi
     // TarifPph di atas karena kebijakan RAT menetapkan SHU dipotong 15% dari penerimaan.
     public decimal TarifPphShu { get; set; } = 0.15m;
 
+    // Catatan kaki yang ditampilkan di laporan Neraca (mis. asal saldo tertentu yang perlu dijelaskan).
+    public string? CatatanNeraca { get; set; }
+
     public DateTime DiperbaruiPada { get; set; } = DateTime.UtcNow;
 }

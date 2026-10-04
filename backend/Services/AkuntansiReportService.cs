@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 public record SaldoAkunItem(string Kode, string Nama, decimal Saldo);
 public record LabaRugiResult(DateTime Dari, DateTime Sampai, List<SaldoAkunItem> Pendapatan, decimal TotalPendapatan, List<SaldoAkunItem> Beban, decimal TotalBeban, decimal LabaBersih);
-public record NeracaResult(DateTime Tanggal, List<SaldoAkunItem> Aset, decimal TotalAset, List<SaldoAkunItem> Liabilitas, decimal TotalLiabilitas, List<SaldoAkunItem> Ekuitas, decimal ShuBerjalan, decimal TotalEkuitas, decimal Selisih);
+public record NeracaResult(DateTime Tanggal, List<SaldoAkunItem> Aset, decimal TotalAset, List<SaldoAkunItem> Liabilitas, decimal TotalLiabilitas, List<SaldoAkunItem> Ekuitas, decimal ShuBerjalan, decimal TotalEkuitas, decimal Selisih, string? Catatan = null);
 public record ArusKasBaris(DateTime Tanggal, string NomorJurnal, string Keterangan, string? Modul, decimal Masuk, decimal Keluar);
 public record ArusKasResult(DateTime Dari, DateTime Sampai, decimal SaldoAwal, decimal TotalMasuk, decimal TotalKeluar, decimal SaldoAkhir, List<ArusKasBaris> Baris);
 public record BukuBesarAkunItem(string Kode, string Nama, string Tipe, decimal SaldoAwal, decimal Debit, decimal Kredit, decimal SaldoAkhir);
