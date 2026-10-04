@@ -30,13 +30,6 @@ jobs:
           dotnet build -c Release
           dotnet publish -c Release -o "$RUNNER_TEMP/publish"
 
-      - name: Buat skrip migrasi database (idempotent)
-        working-directory: backend
-        run: |
-          export PATH="$PATH:$HOME/.dotnet/tools"
-          dotnet tool install --global dotnet-ef --version "10.*"
-          dotnet ef migrations script --idempotent --no-build --configuration Release -o "$RUNNER_TEMP/migrations.sql"
-
       - name: Siapkan kunci SSH
         run: |
           mkdir -p ~/.ssh
@@ -48,9 +41,17 @@ jobs:
         run: ssh -i ~/.ssh/id_ed25519 "$SSH_TARGET" "echo koneksi-ok"
 
       - name: Terapkan migrasi ke database production
+        working-directory: backend
         run: |
-          scp -i ~/.ssh/id_ed25519 "$RUNNER_TEMP/migrations.sql" "$SSH_TARGET:/tmp/kkcs-migrations.sql"
-          ssh -i ~/.ssh/id_ed25519 "$SSH_TARGET" "sudo /usr/local/bin/kkcs-apply-sql /tmp/kkcs-migrations.sql"
+          export PATH="$PATH:$HOME/.dotnet/tools"
+          dotnet tool install --global dotnet-ef --version "10.*"
+          # Lewat database update langsung (per-statement via ADO.NET), bukan skrip SQL teks —
+          # skrip teks (migrations script) gagal pada migrasi lama yang berisi CREATE TRIGGER mentah,
+          # karena SQL Server mewajibkan CREATE TRIGGER jadi satu-satunya statement dalam batch-nya.
+          ssh -i ~/.ssh/id_ed25519 -f -N -L 15433:127.0.0.1:1433 "$SSH_TARGET"
+          sleep 2
+          dotnet ef database update --no-build --configuration Release --connection \
+            "Server=127.0.0.1,15433;Database=db-kkcs;User Id=sa;Password=${{ secrets.SA_PASSWORD_PROD }};TrustServerCertificate=True;MultipleActiveResultSets=True"
 
       - name: Upload backend dan restart service
         run: |
